@@ -1,0 +1,124 @@
+#load Biopython
+import Bio.KEGG.KGML as bkk
+
+
+#do a file handler 
+fh = ("path/to/file",'r') #'r' is for read_file
+
+
+#then parse KGML file and return pathway object
+pathway = bkk.KGML_parser.read(fh)
+
+
+#Returns a readable summary description string
+path_sum = pathway.__str__()
+#example:
+Pathway: Glycolysis / Gluconeogenesis
+KEGG ID: path:hsa00010
+Image file: http://www.kegg.jp/kegg/pathway/hsa/hsa00010.png
+Organism: hsa
+Entries: 98
+Entry types:
+	ortholog: 25
+	gene: 35
+	compound: 31
+	map: 7
+
+#retrieve the list of elements in each category
+#for instance, "genes"
+
+pw_genes = pathway.genes #the list of genes (as "Entry" objects)
+
+#This list is subsetable
+#example
+In [208]: pw_genes[20].id
+Out[208]: 65
+
+#retrieve the "graphics" tags. These contain the gene symbol names. Which will be useful for actual biology.
+#example
+pw_genes[20].graphics[0].name
+Out[215]: 'GCK, FGQTL3, GK, GLK, HHF3, HK4, HKIV, HXKP, LGLK, MODY2'
+
+
+#"For" example
+
+for i in range(0, len(pw_genes)):
+   .....:     print pw_genes[i].name
+   .....:     
+hsa:226 hsa:229 hsa:230
+hsa:217 hsa:219 hsa:223 hsa:224 hsa:501
+hsa:218 hsa:220 hsa:221 hsa:222
+hsa:10327
+hsa:124 hsa:125 hsa:126 hsa:127 hsa:128 hsa:130 hsa:131
+hsa:5160 hsa:5161 hsa:5162
+hsa:5160 hsa:5161 hsa:5162
+hsa:1737
+hsa:160287 hsa:3939 hsa:3945 hsa:3948 hsa:92483
+hsa:5313 hsa:5315
+hsa:2023 hsa:2026 hsa:2027
+hsa:441531 hsa:5223 hsa:5224 hsa:669
+hsa:2597 hsa:26330
+hsa:7167
+hsa:5211 hsa:5213 hsa:5214
+hsa:2203 hsa:8789
+hsa:2821
+hsa:5236 hsa:55276
+hsa:2821
+hsa:3098 hsa:3099 hsa:3101 hsa:80201
+hsa:2645
+hsa:2821
+hsa:130589
+hsa:2645
+hsa:3098 hsa:3099 hsa:3101 hsa:80201
+hsa:2538 hsa:57818 hsa:92579
+hsa:1738
+hsa:5230 hsa:5232
+hsa:5105 hsa:5106
+hsa:669
+hsa:669
+hsa:55902 hsa:84532
+hsa:83440
+hsa:83440
+
+#now we get all the actual gene names for each node. 
+
+for i in range(0, len(pw_genes)):
+	for j in range(0, len(pw_genes[i].graphics)):
+		print pw_genes[i].graphics[j].name 
+
+
+ALDOA, ALDA, GSD12, HEL-S-87p...
+ALDH2, ALDH-E2, ALDHI, ALDM...
+ALDH3A1, ALDH3, ALDHIII...
+AKR1A1, ALDR1, ALR, ARM, DD3, HEL-S-6
+ADH1A, ADH1...
+PDHA1, PDHA, PDHCE1A, PHE1A...
+PDHA1, PDHA, PDHCE1A, PHE1A...
+DLAT, DLTA, PDC-E2, PDCE2
+LDHAL6A, LDH6A...
+PKLR, PK1, PKL, PKR, PKRL, RPK...
+ENO1, ENO1L1, MPB1, NNE, PPH...
+PGAM4, PGAM-B, PGAM1, PGAM3, dJ1000K24.1...
+GAPDH, G3PD, GAPD, HEL-S-162eP...
+TPI1, HEL-S-49, TIM, TPI, TPID
+PFKL, ATP-PFK, PFK-B, PFK-L...
+FBP1, FBP...
+GPI, AMF, GNPI, NLK, PGI, PHI, SA-36, SA36
+PGM1, CDG1T, GSD14...
+GPI, AMF, GNPI, NLK, PGI, PHI, SA-36, SA36
+HK1, HK1-ta, HK1-tb, HK1-tc, HKD, HKI, HMSNR, HXK1...
+GCK, FGQTL3, GK, GLK, HHF3, HK4, HKIV, HXKP, LGLK, MODY2
+GPI, AMF, GNPI, NLK, PGI, PHI, SA-36, SA36
+GALM, GLAT, HEL-S-63p, IBD1
+GCK, FGQTL3, GK, GLK, HHF3, HK4, HKIV, HXKP, LGLK, MODY2
+HK1, HK1-ta, HK1-tb, HK1-tc, HKD, HKI, HMSNR, HXK1...
+G6PC, G6PC1, G6PT, GSD1, GSD1a...
+DLD, DLDD, DLDH, E3, GCSL, LAD, PHE3
+PGK1, HEL-S-68p, MIG10, PGKA...
+PCK1, PEPCK-C, PEPCK1, PEPCKC...
+BPGM, DPGM
+BPGM, DPGM
+ACSS2, ACAS2, ACECS, ACS, ACSA, dJ1161H23.1...
+ADPGK, 2610017G09Rik, ADP-GK
+ADPGK, 2610017G09Rik, ADP-GK
+
