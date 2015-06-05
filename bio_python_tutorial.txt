@@ -1,3 +1,6 @@
+#Objective: to parse a KEGG XML, and return a NX object.
+#Advance so far: Parse KEGG XML as "PATHWAY" object. Retrieve for each "Gene" the "Gene Symbol" 
+
 #load Biopython
 import Bio.KEGG.KGML as bkk
 
