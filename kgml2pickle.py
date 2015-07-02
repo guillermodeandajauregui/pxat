@@ -21,7 +21,7 @@ pathway = KGML_parser.parse(args.kgml).next()
 uentries = {}
 for e in pathway.entries:
     k = pathway.entries[e].graphics[0].name
-    uentries[k] = e
+    uentries[k] = pathway.entries[e]
 
 
 g = nx.DiGraph()
