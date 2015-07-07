@@ -1,8 +1,6 @@
 import argparse
 import networkx as nx
-
 from Bio.KEGG.KGML import KGML_parser
-import pickle
 
 
 
@@ -16,19 +14,13 @@ args = parser.parse_args()
 #then parse KGML file and return pathway object
 pathway = KGML_parser.parse(args.kgml).next()
 
-
-# make genes unique
-uentries = {}
-for e in pathway.entries:
-    k = pathway.entries[e].graphics[0].name
-    uentries[k] = pathway.entries[e]
-
-
 g = nx.DiGraph()
 # copy relations to edges
 for relation in pathway.relations:
-    g.add_edge( uentries[relation.entry1.graphics[0].name],
-                uentries[relation.entry2.graphics[0].name], relation=relation)
+    # no undefined or path entries, only hsa names
+    if relation.entry1.name.startswith('hsa') and relation.entry2.name.startswith('hsa'):
+        g.add_edge( relation.entry1.name,
+                    relation.entry2.name, relation=relation)
 
 # write to pickle
 nx.gpickle.write_gpickle(g, args.pickle)
