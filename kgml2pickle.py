@@ -19,8 +19,10 @@ g = nx.DiGraph()
 for relation in pathway.relations:
     # no undefined or path entries, only hsa names
     if relation.entry1.name.startswith('hsa') and relation.entry2.name.startswith('hsa'):
-        g.add_edge( relation.entry1.name,
-                    relation.entry2.name, relation=relation)
+        for e1 in relation.entry1.name.split():
+            for e2 in relation.entry2.name.split():            
+                g.add_edge( e1,
+                            e2, relation=relation)
 
 # write to pickle
 nx.gpickle.write_gpickle(g, args.pickle)
