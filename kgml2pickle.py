@@ -20,9 +20,9 @@ for relation in pathway.relations:
     # no undefined or path entries, only hsa names
     if relation.entry1.name.startswith('hsa') and relation.entry2.name.startswith('hsa'):
         for e1 in relation.entry1.name.split():
-            for e2 in relation.entry2.name.split():            
+            for e2 in relation.entry2.name.split():
                 g.add_edge( e1,
-                            e2, relation=relation)
+                            e2, type=relation.type, subtypes=relation.subtypes)
 
 # write to pickle
 nx.gpickle.write_gpickle(g, args.pickle)
