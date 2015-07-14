@@ -23,9 +23,19 @@ for n in g.nodes():
             h.node[e[0]]['final_transducer'] = True        
 
 for n in h.nodes():
-    if not ('signal' in h.node[n] or 'receptor' in h.node[n] or 'effector' in h.node[n]):
+    if not ('signal' in h.node[n] or 'effector' in h.node[n]):
         h.node[n]['transducer'] = True
 
+for n in h.nodes():
+    if 'receptor' in h.node[n] and 'transducer' in h.node[n]:
+        in_classes = set()
+        for e in h.in_edges(n):
+            in_classes.update(h.node[e[0]].keys())
+
+        if not 'transducer' in in_classes:
+            del(h.node[n]['transducer'])
+
+            
 
 # write to pickle
 nx.gpickle.write_gpickle(h, args.outpickle)
