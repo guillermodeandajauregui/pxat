@@ -26,6 +26,8 @@ for n in h.nodes():
     if not ('signal' in h.node[n] or 'effector' in h.node[n]):
         h.node[n]['transducer'] = True
 
+# Biological relevance of molecules that are both receptor AND
+# transducers is different from "true" receptors 
 for n in h.nodes():
     if 'receptor' in h.node[n] and 'transducer' in h.node[n]:
         in_classes = set()
