@@ -17,7 +17,7 @@ for p in args.keggpickles:
     g = nx.gpickle.read_gpickle(p)
 
     for n in g.nodes():
-        print g.node[n]
+
         if n in h.node:
             h.node[n]['pathways'].update(g.node[n]['pathways'])
         else:
