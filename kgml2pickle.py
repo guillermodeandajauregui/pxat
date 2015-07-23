@@ -21,8 +21,13 @@ for relation in pathway.relations:
     if relation.entry1.name.startswith('hsa') and relation.entry2.name.startswith('hsa'):
         for e1 in relation.entry1.name.split():
             for e2 in relation.entry2.name.split():
+                g.add_node( e1, pathways=set([pathway.title,]))
+                g.add_node( e2, pathways=set([pathway.title,]))
                 g.add_edge( e1,
-                            e2, type=relation.type, subtypes=relation.subtypes)
+                            e2, type=relation.type,
+                            subtypes=relation.subtypes,
+                            pathways=set([pathway.title,]))
 
+                
 # write to pickle
 nx.gpickle.write_gpickle(g, args.pickle)

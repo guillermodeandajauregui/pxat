@@ -15,8 +15,21 @@ h = nx.DiGraph()
 
 for p in args.keggpickles:
     g = nx.gpickle.read_gpickle(p)
-    for e in g.edges():
-        h.add_edge( *e, attr_dict=g.get_edge_data(*e))
 
+    for n in g.nodes():
+        print g.node[n]
+        if n in h.node:
+            h.node[n]['pathways'].update(g.node[n]['pathways'])
+        else:
+            h.add_node(n, pathways=g.node[n]['pathways'])
+    
+    for e in g.edges():
+        edge_data = h.get_edge_data(*e)
+        if edge_data:
+            edge_data['pathways'].update(g.get_edge_data(*e)['pathways'])
+            h.add_edge( *e, attr_dict=edge_data)
+        else:
+            h.add_edge( *e, attr_dict=g.get_edge_data(*e))
+            
 # write to pickle
 nx.gpickle.write_gpickle(h, args.outpickle)
