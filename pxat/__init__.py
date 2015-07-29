@@ -47,13 +47,17 @@ def nodes_from_pathway(p, g):
 
 def subgraph_from_pathways(pathways, g):
     nodes = []
-    for p in pathways:
-        nodes += nodes_from_pathway(p, g) 
+    if type(pathways) == list:
+        for p in pathways:
+            nodes += nodes_from_pathway(p, g)
+    elif type(pathways) == str:
+        nodes += nodes_from_pathway(pathways, g)
+        
     return nx.subgraph(g, nodes)
 
 
-def paths(s, t, g):
-    return [p for p in nx.all_simple_paths(g, s, t)]
+def paths(source, target, g):
+    return [p for p in nx.all_simple_paths(g, source, target)]
 
 
 
