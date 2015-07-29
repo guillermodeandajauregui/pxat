@@ -1,9 +1,5 @@
 import networkx as nx
 
-g = nx.gpickle.read_gpickle('human_kegg_ann.pickle')
-
-
-
 
 def pathway_jin( p1, p2, g ):
 
