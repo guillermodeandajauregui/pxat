@@ -2,11 +2,9 @@ import networkx as nx
 
 
 
+def pathway_jin( p1, p2, g ):
 
-
-def pathway_jin( p1, p2 ):
-    g = nx.gpickle.read_gpickle('human_kegg_ann.pickle')
-    pw1 = []
+    pw1  = []
     pw2  = []
 
     for n in g.nodes():
@@ -18,6 +16,9 @@ def pathway_jin( p1, p2 ):
     return float(len(set(pw1).intersection(set(pw2)))) / float(len(set(pw1).union(set(pw2))))
 
 
+
+
+g = nx.gpickle.read_gpickle('human_kegg_ann.pickle')
 p1 = 'Apoptosis'
 p2 = 'Estrogen signaling pathway'
 
