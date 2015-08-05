@@ -1,5 +1,6 @@
 import networkx as nx
 from Bio.KEGG.KGML import KGML_parser
+from itertools import combinations
 
 
 def pathway_jin( p1, p2, g ):
@@ -200,6 +201,13 @@ def readKGML(kgml):
     return KGML_parser.parse(kgml).next()
 
 
+
+
+
+
+
+from pprint import pprint
+
 # parse KGML file and return pathway object
 def kgml2graph(pathway):
     """
@@ -209,6 +217,38 @@ def kgml2graph(pathway):
 
     """
     g = nx.DiGraph()
+
+    # dismember group entries
+    groups = set()
+    for entry in pathway.entries.values():
+        if entry.type=='group':
+            for c in list(entry.components):
+                # tag their nodes
+                for node in pathway.entries[c.id].name.split():
+                    if node.startswith('hsa'):
+                        group = (pathway.title, entry.id)
+                        groups.add(group)
+                        if node in g.nodes():
+                            g.node[node]['groups'].append(group)
+                        else:
+                            g.add_node( node,
+                                        pathways=set([pathway.title,]),
+                                        groups=[group, ])
+
+    # connect all nodes of a group in a cluster
+    for group in groups:
+        # get nodes for each group
+        nodes = set()
+        for n in g.nodes():
+            if group in g.node[n]['groups']:
+                nodes.add(n)
+        # pair them, connect them
+        for pair in combinations(nodes, 2):
+            g.add_edge( pair[0],
+                        pair[1],
+                        subtypes=['group', ],
+                        pathways=set([pathway.title,]))                        
+    
     # copy relations to edges
     for relation in pathway.relations:
         # no undefined or path entries, only hsa names
@@ -221,5 +261,4 @@ def kgml2graph(pathway):
                                 e2, type=relation.type,
                                 subtypes=relation.subtypes,
                                 pathways=set([pathway.title,]))
-
     return g
