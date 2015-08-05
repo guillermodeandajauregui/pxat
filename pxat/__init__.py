@@ -244,11 +244,38 @@ def kgml2graph(pathway):
                 nodes.add(n)
         # pair them, connect them
         for pair in combinations(nodes, 2):
+            # must check for forward edge
+            if g.get_edge_data(pair[0],pair[1]):
+                f_edge_groups = g.get_edge_data(pair[0],pair[1])['groups']
+                f_edge_groups.add(group)
+            else:
+                f_edge_groups = set([group, ])
+            # and reverse edge
+            if g.get_edge_data(pair[1],pair[0]):
+                r_edge_groups = g.get_edge_data(pair[1],pair[0])['groups']
+                r_edge_groups.add(group)
+            else:
+                r_edge_groups = set([group, ])
+                
+            # both are in the same group so bunch them together
+            edge_groups = f_edge_groups.union(r_edge_groups)
+
+            # upsert in and out edges
             g.add_edge( pair[0],
                         pair[1],
+                        groups=edge_groups,
                         subtypes=['group', ],
                         pathways=set([pathway.title,]))                        
-    
+
+            g.add_edge( pair[1],
+                        pair[0],
+                        groups=edge_groups,
+                        subtypes=['group', ],
+                        pathways=set([pathway.title,]))                        
+            
+
+
+            
     # copy relations to edges
     for relation in pathway.relations:
         # no undefined or path entries, only hsa names
@@ -257,8 +284,22 @@ def kgml2graph(pathway):
                 for e2 in relation.entry2.name.split():
                     g.add_node( e1, pathways=set([pathway.title,]))
                     g.add_node( e2, pathways=set([pathway.title,]))
+
+                    edge = g.get_edge_data(e1, e2)
+                    if edge:
+                        if edge['subtypes'] == None:
+                            subtypes = list()
+                        else:
+                            subtypes = edge['subtypes'].append(relation.subtypes)
+                    else:
+                        if relation.subtypes:
+                            subtypes = relation.subtypes
+                        else:
+                            subtypes = list()
+                        
                     g.add_edge( e1,
-                                e2, type=relation.type,
-                                subtypes=relation.subtypes,
-                                pathways=set([pathway.title,]))
+                                e2,
+                                type     = relation.type,
+                                subtypes = subtypes,
+                                pathways = set([pathway.title,]))
     return g
