@@ -1,4 +1,5 @@
 import networkx as nx
+from Bio.KEGG.KGML import KGML_parser
 
 
 def pathway_jin( p1, p2, g ):
@@ -189,3 +190,36 @@ def transducers_from_pathway(p, g):
 
 def final_transducers_from_pathway(p, g):
     pass
+
+
+
+
+
+# a shorter way
+def readKGML(kgml):
+    return KGML_parser.parse(kgml).next()
+
+
+# parse KGML file and return pathway object
+def kgml2graph(pathway):
+    """
+    pathway: a KGML pathway, as parsed by BioPython's KGML_parser
+    
+    returns: a NetworkX direted graph
+
+    """
+    g = nx.DiGraph()
+    # copy relations to edges
+    for relation in pathway.relations:
+        # no undefined or path entries, only hsa names
+        if relation.entry1.name.startswith('hsa') and relation.entry2.name.startswith('hsa'):
+            for e1 in relation.entry1.name.split():
+                for e2 in relation.entry2.name.split():
+                    g.add_node( e1, pathways=set([pathway.title,]))
+                    g.add_node( e2, pathways=set([pathway.title,]))
+                    g.add_edge( e1,
+                                e2, type=relation.type,
+                                subtypes=relation.subtypes,
+                                pathways=set([pathway.title,]))
+
+    return g
