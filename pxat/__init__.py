@@ -130,21 +130,6 @@ def paths(source, target, g):
 
 
     
-# def effector_from_signal(signal, g):
-#     signals   = set()
-#     effectors = set()
-
-#     for n in g.nodes():
-#         if 'signal' in g.node[n]:
-#             signals.add(n)
-
-#         if 'effector' in g.node[n]:
-#             effectors.add(n)
-
-#         for s in signals:
-#             for e in effectors:
-#                 print s, e, [p for p in nx.all_simple_paths(g, s, e)]
-
 
 def targets_from_node(g, node, topological_type):
     all_ttypes = set()
@@ -178,40 +163,7 @@ def sources_to_node(g, node, topological_type):
 
 
 
-def signals_to_node(node, g):
-    return sources_to_node(g, node, 'signal')
 
-
-def effectors_from_receptor(receptor, g):
-    pass
-
-
-
-def receptors_from_effectors(effector, g):
-    pass
-
-
-
-
-def signals_from_pathway(p, g):
-    pass
-
-
-
-def effectors_from_pathway(p, g):
-    pass
-
-
-def receptors_from_pathway(p, g):
-    pass
-
-
-def transducers_from_pathway(p, g):
-    pass
-
-
-def final_transducers_from_pathway(p, g):
-    pass
 
 
 
@@ -324,3 +276,21 @@ def kgml2graph(pathway):
                                 subtypes = subtypes,
                                 pathways = set([pathway.title,]))
     return g
+
+
+
+
+
+
+def write_adj_matrix( path, g ):
+    with open(path, 'w') as out:
+        a = nx.adjacency_matrix(g).toarray()
+
+        nodes = g.nodes()
+        
+        out.write("\t".join(['x',] + [n for n in nodes] ) + "\n")
+    
+        for row in a:
+            line = [nodes.pop(0),] + list([str(int(i)) for i in row])
+            out.write("\t".join(line) + "\n")
+            
