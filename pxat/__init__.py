@@ -1,6 +1,7 @@
 import networkx as nx
 from Bio.KEGG.KGML import KGML_parser
 from itertools import combinations
+from pprint import pprint
 
 
 def pathway_jin( p1, p2, g ):
@@ -145,20 +146,40 @@ def paths(source, target, g):
 #                 print s, e, [p for p in nx.all_simple_paths(g, s, e)]
 
 
-
-def signals_to_node(node, g):
-    all_signals = set()
+def targets_from_node(g, node, topological_type):
+    all_ttypes = set()
     for n in g.nodes():
-        if 'signal' in g.node[n]:
-            all_signals.add(n)
+        if topological_type in g.node[n]:
+            all_ttypes.add(n)
 
-    signals = []
-    for s in all_signals:
+    targets = []
+    for s in all_ttypes:
+        p = paths(node, s, g)
+        if p:
+            targets.append(s)
+        
+    return targets
+
+
+
+def sources_to_node(g, node, topological_type):
+    all_ttypes = set()
+    for n in g.nodes():
+        if topological_type in g.node[n]:
+            all_ttypes.add(n)
+
+    sources = []
+    for s in all_ttypes:
         p = paths(s, node, g)
         if p:
-            signals.append(s)
+            sources.append(s)
         
-    return signals
+    return sources
+
+
+
+def signals_to_node(node, g):
+    return sources_to_node(g, node, 'signal')
 
 
 def effectors_from_receptor(receptor, g):
@@ -206,7 +227,7 @@ def readKGML(kgml):
 
 
 
-from pprint import pprint
+
 
 # parse KGML file and return pathway object
 def kgml2graph(pathway):
