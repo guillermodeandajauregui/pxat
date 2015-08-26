@@ -20,11 +20,29 @@ def pathway_jin( p1, p2, g ):
 
 
 
-def pathway_xtalk( p, g):
+def pathway_xtalk( g, ):
     """
-    returns pathways that crosstalk with given pathway, with their jin
+    returns pathways that crosstalk with given pathway
     """
+    
 
+
+def trayectories_from_nbunch(g, bunch):
+"""
+
+h = g.to_undirected()
+graphs = list(nx.connected_component_subgraphs(h))
+i = g.subgraph(graphs[0])
+j = topological_annotate(i)
+ahora: sacar todos los sources, todos los targets
+for s_t in combinations(s,t, 2):
+     traer la trayectoria
+return lista de trayectorias
+
+"""
+    
+
+    
 
 
 # class KEGGPathway(DiGraph):
