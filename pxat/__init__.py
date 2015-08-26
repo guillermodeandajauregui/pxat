@@ -26,22 +26,35 @@ def pathway_xtalk( g, ):
     """
     
 
+def nodes_by_subtype(g, type):
+    types = []
+    for n in g.nodes():
+        if type in g.node[n]:
+            types.append(n)
+    return types
 
-def trayectories_from_nbunch(g, bunch):
-"""
-
-h = g.to_undirected()
-graphs = list(nx.connected_component_subgraphs(h))
-i = g.subgraph(graphs[0])
-j = topological_annotate(i)
-ahora: sacar todos los sources, todos los targets
-for s_t in combinations(s,t, 2):
-     traer la trayectoria
-return lista de trayectorias
-
-"""
     
+def trayectories_from_nbunch(g, bunch):
+    """
+    h = g.to_undirected()
+    graphs = list(nx.connected_component_subgraphs(h))
+    # extract nbunch from directed
+    i = g.subgraph(graphs[0])
+    j = topological_annotate(i)
+    ahora: sacar todos los sources, todos los targets
+    for s_t in combinations(s,t, 2):
+    traer la trayectoria
+    return lista de trayectorias
 
+    """
+    h = g.to_undirected()
+    for sg in nx.connected_component_subgraphs(h):
+        i = topological_annotate(g.subgraph(sg))
+        signals   = nodes_by_type(i, 'signal')
+        effectors = nodes_by_type(i, 'effector')
+        for n in signals:
+            for m in effectors:
+                nx.shortest_path(i, n, m)
     
 
 
