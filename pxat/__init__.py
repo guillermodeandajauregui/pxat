@@ -325,3 +325,9 @@ def write_adj_matrix( path, g ):
             line = [nodes.pop(0),] + list([str(int(i)) for i in row])
             out.write("\t".join(line) + "\n")
             
+def kgml_file_to_digraph( kgml_file):
+	filepath = file(kgml_file)
+	gi = readKGML(filepath)
+	kegg_pw = kgml2graph(gi)
+	return(kegg_pw)
+	
