@@ -331,3 +331,32 @@ def kgml_file_to_digraph( kgml_file):
 	kegg_pw = kgml2graph(gi)
 	return(kegg_pw)
 	
+
+
+
+
+
+
+
+
+
+def merge_pathway_subgraphs(*subgraphs):
+    # new graph
+    h = nx.DiGraph()
+
+    for g in subgraphs:
+        for n in g.nodes():
+            if n in h.node:
+                h.node[n]['pathways'].update(g.node[n]['pathways'])
+            else:
+                h.add_node(n, pathways=g.node[n]['pathways'])
+    
+        for e in g.edges():
+            edge_data = h.get_edge_data(*e)
+            if edge_data:
+                edge_data['pathways'].update(g.get_edge_data(*e)['pathways'])
+                h.add_edge( *e, attr_dict=edge_data)
+            else:
+                h.add_edge( *e, attr_dict=g.get_edge_data(*e))
+
+    return h
