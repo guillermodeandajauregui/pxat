@@ -33,6 +33,20 @@ def nodes_by_subtype(g, type):
             types.append(n)
     return types
 
+def trayectories_in_graph(g):
+	"""
+	all trajectories from signal to effector in graph 
+	"""
+	signals   = nodes_by_subtype(g, 'signal')
+	effectors = nodes_by_subtype(g, 'effector')
+	generators = []
+	for n in signals:
+		for m in effectors:
+			generators.append(nx.all_simple_paths(g, n, m))
+	r = []
+	for i in generators:
+		r.append(list(i))
+	return r
     
 def trayectories_from_nbunch(g, bunch):
     """
