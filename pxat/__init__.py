@@ -58,6 +58,9 @@ def pathway_xtalk( g, ):
     
 
 def nodes_by_subtype(g, type):
+  """
+  Returns a list of nodes that match a particular node type. 
+  """
     types = []
     for n in g.nodes():
         if type in g.node[n]:
@@ -115,9 +118,10 @@ def topological_annotate(g):
   Effectors have no output, only inputs.
   Signals have a Receptor as their output.
   Intermediate nodes serve as Transducers.
-  A Final Transducer is the input to an effector.
+  A Final Transducer is the input to an effector. 
+    
   A trajectory may be found from a Signal to an Effector. 
-  
+  Some of these classifications are not exclusive. A final transducer for a certain effector may be a regular transducer in another trajectory, a receptor may also be a transducer...
   
   """
     # clear previous annotation if there be
