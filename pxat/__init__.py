@@ -50,7 +50,13 @@ def subgraph_jin(pw1, pw2, g):
     p2 = subgrapher(g, pw2).node
     return float(len(set(p1).intersection(set(p2)))) / float(len(set(p1).union(set(p2))))
 
-
+def crosstalk_nodes(A, B):
+    """
+    returns a list of nodes shared by A and B
+    A and B are graphs
+    """
+    return set(A.node).intersection(set(B.node))
+  
 def pathway_xtalk( g, ):
     """
     returns pathways that crosstalk with given pathway
@@ -61,9 +67,9 @@ def nodes_by_subtype(g, type):
   """
   Returns a list of nodes that match a particular node type. 
   """
-    types = []
-    for n in g.nodes():
-        if type in g.node[n]:
+  types = []
+  for n in g.nodes():
+    if type in g.node[n]:
             types.append(n)
     return types
 
@@ -110,63 +116,63 @@ def trajectories_from_nbunch(g, nbunch):
 
 
 def topological_annotate(g):
-  """
-  Annotates nodes in graph with a classification based on their position.
-  Nodes in a directed graph have different roles depending on their position.
-   
-  Signals have no input, only output.
-  Effectors have no output, only inputs.
-  Signals have a Receptor as their output.
-  Intermediate nodes serve as Transducers.
-  A Final Transducer is the input to an effector. 
+    """
+    Annotates nodes in graph with a classification based on their position.
+    Nodes in a directed graph have different roles depending on their position.
     
-  A trajectory may be found from a Signal to an Effector. 
-  Some of these classifications are not exclusive. A final transducer for a certain effector may be a regular transducer in another trajectory, a receptor may also be a transducer...
-  
-  """
+    Signals have no input, only output.
+    Effectors have no output, only inputs.
+    Signals have a Receptor as their output.
+    Intermediate nodes serve as Transducers.
+    A Final Transducer is the input to an effector. 
+      
+    A trajectory may be found from a Signal to an Effector. 
+    Some of these classifications are not exclusive. A final transducer for a certain effector may be a regular transducer in another trajectory, a receptor may also be a transducer...
+    
+    """
     # clear previous annotation if there be
     for n in g.nodes():
-        if 'transducer' in g.node[n]:
-            del(g.node[n]['transducer'])
-        if 'signal' in g.node[n]:
-            del(g.node[n]['signal'])
-        if 'receptor' in g.node[n]:
-            del(g.node[n]['receptor'])
-        if 'effector' in g.node[n]:
-            del(g.node[n]['effector'])
-        if 'final_transducer' in g.node[n]:
-            del(g.node[n]['final_transducer'])
-                
-    
+      if 'transducer' in g.node[n]:
+		del(g.node[n]['transducer'])
+      if 'signal' in g.node[n]:
+		del(g.node[n]['signal'])
+      if 'receptor' in g.node[n]:
+		del(g.node[n]['receptor'])
+      if 'effector' in g.node[n]:
+		del(g.node[n]['effector'])
+      if 'final_transducer' in g.node[n]:
+		del(g.node[n]['final_transducer'])
+		    
+	
     h = g.copy()
 
     for n in g.nodes():
-        if len(g.in_edges(n)) == 0:
-            h.node[n]['signal'] = True
-            for e in g.out_edges(n):
-                h.node[e[1]]['receptor'] = True
-    
+      if len(g.in_edges(n)) == 0:
+		h.node[n]['signal'] = True
+		for e in g.out_edges(n):
+		    h.node[e[1]]['receptor'] = True
+	
     for n in g.nodes():
-        if len(g.out_edges(n)) == 0:
-            h.node[n]['effector'] = True
-            for e in g.in_edges(n):
-                h.node[e[0]]['final_transducer'] = True        
-    
+      if len(g.out_edges(n)) == 0:
+		h.node[n]['effector'] = True
+		for e in g.in_edges(n):
+		    h.node[e[0]]['final_transducer'] = True        
+	
     for n in h.nodes():
-        if not ('signal' in h.node[n] or 'effector' in h.node[n]):
-            h.node[n]['transducer'] = True
-    
-    # Biological relevance of molecules that are both receptor AND
-    # transducers is different from "true" receptors 
+	    if not ('signal' in h.node[n] or 'effector' in h.node[n]):
+		h.node[n]['transducer'] = True
+	
+	# Biological relevance of molecules that are both receptor AND
+	# transducers is different from "true" receptors 
     for n in h.nodes():
-        if 'receptor' in h.node[n] and 'transducer' in h.node[n]:
-            in_classes = set()
-            for e in h.in_edges(n):
-                in_classes.update(h.node[e[0]].keys())
-    
-            if not 'transducer' in in_classes:
-                del(h.node[n]['transducer'])
-    return h
+	    if 'receptor' in h.node[n] and 'transducer' in h.node[n]:
+		in_classes = set()
+		for e in h.in_edges(n):
+		    in_classes.update(h.node[e[0]].keys())
+	
+		if not 'transducer' in in_classes:
+		    del(h.node[n]['transducer'])
+		    return h
 
 def topo_subgrapher(g, nbunch):
     """
