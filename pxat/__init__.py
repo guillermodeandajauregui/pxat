@@ -19,6 +19,13 @@ def pathway_jin( p1, p2, g ):
 
     return float(len(set(pw1).intersection(set(pw2)))) / float(len(set(pw1).union(set(pw2))))
 
+def subgrapher(g, nbunch):
+    """
+    Returns a subgraph of nbunch in g
+    """
+    return nx.DiGraph(g.subgraph(nbunch))
+    
+
 def geneset_jin(pw1, pw2):
     """
     returns Jaccard index between two genesets
@@ -28,19 +35,19 @@ def geneset_jin(pw1, pw2):
 
 def graph_jin(g1, g2):
     """
-    returns Jaccard index between two genesets
+    returns Jaccard index between two graphs
     
     """
     return float(len(set(g1.node).intersection(set(g2.node)))) / float(len(set(g1.node).union(set(g2.node))))
 
 
-def subgraph_jin(pw1, pw2):
+def subgraph_jin(pw1, pw2, g):
     """
     returns Jaccard index between two subgraphs from two nbunches 
     
     """
-    p1 = pw1.nodes
-    p2 = pw2.nodes
+    p1 = subgrapher(g, pw1).node
+    p2 = subgrapher(g, pw2).node
     return float(len(set(p1).intersection(set(p2)))) / float(len(set(p1).union(set(p2))))
 
 
@@ -74,7 +81,7 @@ def trajectories_in_graph(g):
     
 def trajectories_from_nbunch(g, nbunch):
     """
-    
+    all trajectories in a subgraph containing nodes from nbunch 
     """
     subnetwork = nx.DiGraph(g.subgraph(nbunch))
     subnetwork = topological_annotate(subnetwork)
@@ -100,6 +107,19 @@ def trajectories_from_nbunch(g, nbunch):
 
 
 def topological_annotate(g):
+  """
+  Annotates nodes in graph with a classification based on their position.
+  Nodes in a directed graph have different roles depending on their position.
+   
+  Signals have no input, only output.
+  Effectors have no output, only inputs.
+  Signals have a Receptor as their output.
+  Intermediate nodes serve as Transducers.
+  A Final Transducer is the input to an effector.
+  A trajectory may be found from a Signal to an Effector. 
+  
+  
+  """
     # clear previous annotation if there be
     for n in g.nodes():
         if 'transducer' in g.node[n]:
@@ -144,6 +164,12 @@ def topological_annotate(g):
                 del(h.node[n]['transducer'])
     return h
 
+def topo_subgrapher(g, nbunch):
+    """
+    Returns a subgraph of nbunch in g
+    and topologically reannotates nodes
+    """
+    return topological_annotate(nx.DiGraph(g.subgraph(nbunch)))
 
 
 
