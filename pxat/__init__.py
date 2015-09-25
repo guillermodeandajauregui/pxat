@@ -95,7 +95,18 @@ def trajectories_from_nbunch(g, nbunch):
     subnetwork = nx.DiGraph(g.subgraph(nbunch))
     subnetwork = topological_annotate(subnetwork)
     return trajectories_in_graph(subnetwork)
-  
+
+def is_single_component(g, nbunch):
+    """
+    TRUE/FALSE, whether the subgraph of nbunch is connected in a single components
+    """
+    subnetwork = subgrapher(g, nbunch)
+    subnetwork = subnetwork.to_undirected()
+    if len(list(nx.connected_components(subnetwork))) > 1 :
+      return False
+    else:
+      return True
+
     
     
 
