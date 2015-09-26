@@ -105,10 +105,22 @@ def is_single_component(g, nbunch):
     else:
       return True
 
-    
-    
-
-
+def reduce_crosstalk_nodes(g, pw1, pw2):
+	"""
+	shared subtrajectories formed by crosstalk nodes between two pathways may be reduced to a "single reduced node" 
+	"""
+	crosstalkers = crosstalk_nodes(pw1, pw2)
+	g_prime = topo_subgrapher(g, crosstalkers)
+	subtrajectories = trajectories_in_graph(g_prime)
+	return subtrajectories
+	# h = copy g
+	#for every subtrajectory in subtrajectories:
+	#create one reduced node, name = node_1 + node_2 + ... node_n
+	#all inputs to node_1 are inputs to reduced node 
+	#all outputs of node_n are outputs of reduced node
+	#remove nodes 1:n
+	#return h, a new graph with reduced crosstalk nodes 
+	
 # class KEGGPathway(DiGraph):
 #     def __init__(g):
 #         self.g = g
