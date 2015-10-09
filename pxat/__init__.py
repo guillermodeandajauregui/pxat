@@ -71,19 +71,19 @@ def nodes_by_subtype(g, type):
     return types
 
 def trajectories_in_graph(g):
-	"""
-	all trajectories from signal to effector in graph
-	"""
-	signals = nodes_by_subtype(g, 'signal')
-	effectors = nodes_by_subtype(g, 'effector')
-	generators = []
-	for n in signals:
-		for m in effectors:
-				generators.append(nx.all_simple_paths(g, n, m))
-	r = []
-	for i in generators:
-			r.append(list(i))
-	return r
+    """
+    all trajectories from signal to effector in graph
+    """
+    signals = nodes_by_subtype(g, 'signal')
+    effectors = nodes_by_subtype(g, 'effector')
+    trajectories = []
+
+    for n in signals:
+        for m in effectors:
+            for t in nx.all_simple_paths(g, n, m):
+                trajectories.append( t )
+
+    return trajectories
      
     
 def trajectories_from_nbunch(g, nbunch):
@@ -395,11 +395,11 @@ def write_adj_matrix( path, g ):
             out.write("\t".join(line) + "\n")
             
 def kgml_file_to_digraph( kgml_file):
-	filepath = file(kgml_file)
-	gi = readKGML(filepath)
-	kegg_pw = kgml2graph(gi)
-	return(kegg_pw)
-	
+    filepath = file(kgml_file)
+    gi = readKGML(filepath)
+    kegg_pw = kgml2graph(gi)
+    return(kegg_pw)
+
 
 
 
