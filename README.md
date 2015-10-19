@@ -10,6 +10,8 @@ Algunas funcionalidades que pretendemos:
 - Anota esas redes como clasificando los nodos por sus ubicaciones en el
   grafo dirigido.
 
+- Identifica trayectorias en la red
+
 - Identifica sitios de X-talk entre pathways.
 
 - Saca subredes a partir de pathways.
