@@ -1,7 +1,5 @@
 import networkx as nx
 import pxat
-from pxat.KEGG import *
-from pxat.jin import *
 
 
 
@@ -13,10 +11,17 @@ from pxat.jin import *
 
 # test KEGG submodule
 def test_kgml_file_to_digraph():
-    pass
+    g = pxat.KEGG.kgml_file_to_digraph('hsa04210.xml')
+    
+    # hsa04210 is apoptosis
 
-def test_readKGML():
-    pass
+    # nodes should be genes in that pathway, should come from KGML
+
+    # edges are entries in KGML file
+
+    # pathway name should be apoptosis
+
+    
 
 def test_kgml2graph():
     pass

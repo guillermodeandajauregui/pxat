@@ -1,6 +1,4 @@
 import networkx as nx
-
-from itertools import combinations
 from KEGG import *
 
 from pprint import pprint

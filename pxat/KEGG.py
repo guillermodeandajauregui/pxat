@@ -1,9 +1,11 @@
+import networkx as nx
 from Bio.KEGG.KGML import KGML_parser
+from itertools import combinations
 
 def kgml_file_to_digraph( kgml_file):
     filepath = file(kgml_file)
-    gi = readKGML(filepath)
-    kegg_pw = kgml2graph(gi)
+    gi       = readKGML(filepath)
+    kegg_pw  = kgml2graph(gi)
     return(kegg_pw)
 
 
@@ -12,15 +14,6 @@ def kgml_file_to_digraph( kgml_file):
 # a shorter way
 def readKGML(kgml):
     return KGML_parser.parse(kgml).next()
-
-
-
-
-
-
-
-
-
 
 
 
