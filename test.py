@@ -2,6 +2,10 @@ import networkx as nx
 import pxat
 
 
+# run tests like
+# $ nosetests
+
+
 def test_b():
     assert 'b' == 'b'
 
